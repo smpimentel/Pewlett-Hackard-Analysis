@@ -133,3 +133,21 @@ FROM retirement_info as ri
 	LEFT JOIN dept_info as di
 	ON (ri.emp_no = di.emp_no)	
 WHERE di.dept_name IN ('Sales', 'Development');
+
+
+-- Creating retirement_eigible
+SELECT e.emp_no,
+    e.first_name,
+    e.last_name,
+	d.dept_name	
+INTO retirement_eligible
+FROM employees as e
+LEFT JOIN dept_emp as de
+ON e.emp_no = de.emp_no
+INNER JOIN departments as d
+ON de.dept_no = d.dept_no
+WHERE de.to_date = ('9999-01-01')
+AND (e.birth_date BETWEEN '1952-01-01' AND '1955-12-31')
+AND (e.hire_date BETWEEN '1985-01-01' AND '1988-12-31');
+
+SELECT * FROM retirement_eligible;
