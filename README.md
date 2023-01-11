@@ -6,6 +6,7 @@ SQL queries are used to extract the relevant information from the database and c
 
 ## Database
 ![EmployeeDB](/Analysis/EmployeeDB.png)
+
 With our main connection keys as employee number (emp_no) and Department Number (dept_no)
 
 ## Analysis: 
