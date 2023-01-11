@@ -151,3 +151,42 @@ AND (e.birth_date BETWEEN '1952-01-01' AND '1955-12-31')
 AND (e.hire_date BETWEEN '1985-01-01' AND '1988-12-31');
 
 SELECT * FROM retirement_eligible;
+
+
+-- Create a temporary table to store the duplicates
+CREATE TEMPORARY TABLE duplicate_employees AS
+    SELECT emp_no, title
+    FROM retirement_eligible
+    GROUP BY emp_no
+    HAVING COUNT(*) > 1;
+
+-- Create a new table to store employees with odd titles
+CREATE TABLE odd_title (LIKE retirement_eligible);
+
+-- Delete duplicate rows that do not contain "senior"
+DELETE FROM retirement_eligible
+WHERE emp_no IN (
+    SELECT emp_no
+    FROM duplicate_employees
+    WHERE title NOT LIKE '%senior%'
+)
+AND title NOT LIKE '%senior%';
+
+-- Delete duplicate rows that do not contain "assistant"
+DELETE FROM retirement_eligible
+WHERE emp_no IN (
+    SELECT emp_no
+        FROM duplicate_employees
+    WHERE title NOT LIKE '%assistant%'
+)
+AND title NOT LIKE '%assistant%';
+
+-- Insert rows with odd titles into the new table
+INSERT INTO odd_title
+SELECT * FROM retirement_eligible
+WHERE emp_no IN (
+    SELECT emp_no
+    FROM duplicate_employees
+    WHERE title NOT LIKE '%senior%'
+    AND title NOT LIKE '%assistant%'
+);
